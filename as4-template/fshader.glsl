@@ -21,7 +21,9 @@ main()
     vec3 V = normalize(-vPosition2);
     vec3 H = normalize(L+V);
     
-    vec3 ambient = uLightAmbient * uFaceColour;
+    vec3 texColor = texture(ourTexture, TexCoord).rgb; // Specify texture coordinate to sample (aka current)
+
+    vec3 ambient = uLightAmbient * uFaceColour * texColor;
     vec3 diffuse = uLightDiffuse * uFaceColour * max(0.0, dot(vNormal2, L));
     vec3 specular = uLightSpecular * uFaceColour * pow(max(0.0, dot(vNormal2, H)), 4*uShininess);
 

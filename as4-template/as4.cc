@@ -49,11 +49,11 @@ const int face[5][4] = {
 // replace the following coordinates
 vec2 texCoord[5][4] =
   {
-    { vec2(0,0), vec2(0,0), vec2(0,0), vec2(0,0) },
-    { vec2(0,0), vec2(0,0), vec2(0,0), vec2(0,0) },
-    { vec2(0,0), vec2(0,0), vec2(0,0), vec2(0,0) },
-    { vec2(0,0), vec2(0,0), vec2(0,0), vec2(0,0) },
-    { vec2(0,0), vec2(0,0), vec2(0,0), vec2(0,0) }
+    { vec2(0,0), vec2(1,0), vec2(0,1), vec2(1,1) }, // bot
+    { vec2(0,0), vec2(0,1), vec2(1,0), vec2(1,1) }, // top
+    {vec2(0,0), vec2(1,0), vec2(0,1), vec2(1,1) }, // front
+    { vec2(1,0), vec2(0,1), vec2(1,1), vec2(0,0)  }, // right
+    { vec2(1,0), vec2(0,0), vec2(1,1), vec2(0,1) } // left
   };
 
 vec3 normalvec[5];
@@ -94,8 +94,19 @@ void setTextures()
 {
   // generate and bind texture
   GLuint texture;
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
 
   // set up wrapping, minification and magnification parameters
+
+  // Repeat wrapping 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  // Minification filtering
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  //Magnification filtering
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   
   int width, height, nrChannels;
   stbi_set_flip_vertically_on_load(true);
@@ -103,6 +114,8 @@ void setTextures()
   
   if (data) {
     // load image into texture, generate mipmap
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
   } else {
     cout << "Failed to load texture" << endl;
     exit(1);
